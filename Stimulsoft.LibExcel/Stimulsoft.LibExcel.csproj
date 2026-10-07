@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
+    <AssemblyName>LibExcel</AssemblyName>
+    <RootNamespace>ExcelLibrary</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Stimulsoft.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <Configurations>Debug;Release</Configurations>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <!-- The upstream sources expose unsigned types while the assembly is marked CLS compliant;
+         BinFile of CodeLib uses BinaryFormatter, the library itself never calls it -->
+    <NoWarn>CS3001;CS3002;CS3003;CS3005;CS3009;SYSLIB0011</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <!-- The file dialogs of CodeLib need Windows Forms, the library itself never uses them -->
+  <ItemGroup Condition="!$(TargetFramework.StartsWith('net4'))">
+    <Compile Remove="CodeLib\FileSelector.cs" />
+  </ItemGroup>
+
+</Project>
